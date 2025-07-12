@@ -1,0 +1,92 @@
+managed;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_EXCEL_USER_C alias ExcelUser
+implementation in class zbp_i_excel_user_c unique
+persistent table ztb_excel_user_c
+lock master
+total etag LastChangedAt
+draft table ztb_xl_user_dr
+early numbering
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+
+  field ( readonly ) EndUser, FileId;
+
+  association _Data { create; with draft; }
+
+  // Logic to read excel data into associated entity ZI_EXCEL_DATA
+  action uploadExcelData result [1] $self;
+
+  // Change File Status During Creation of new record
+  determination FillFileStatus on modify { field EndUser; }
+
+  // Change File Status When file is selected
+  determination FillSelectedStatus on modify { field Attachment; }
+
+  side effects
+  {
+    field Attachment affects field FileStatus;
+    action uploadExcelData affects $self, messages;
+  }
+
+  //Draft actions
+  draft action Activate optimized;
+  draft action Edit;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for ztb_excel_user_c
+    {
+      EndUser            = end_user;
+      FileId             = file_id;
+      FileStatus         = file_status;
+      Attachment         = attachment;
+      Mimetype           = mimetype;
+      Filename           = filename;
+      LocalCreatedBy     = local_created_by;
+      LocalCreatedAt     = local_created_at;
+      LocalLastChangedBy = local_last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedAt      = last_changed_at;
+    }
+}
+
+define behavior for ZI_EXCEL_DATA_C alias ExcelData
+implementation in class zbp_i_excel_data_c unique
+persistent table ztb_excel_data_c
+draft table ztb_xl_data_dr
+lock dependent by _User
+authorization dependent by _User
+{
+  update;
+  delete;
+
+  field ( readonly ) EndUser, FileId, LineNumber, PoNumber, PoItem, GrQuantity, UnitOfMeasure, SiteId, HeaderText;
+  field ( readonly, numbering : managed ) LineId;
+
+  association _User;
+
+  //action uploadXLData result [1] $self;
+  action processData result [1] $self;
+
+  mapping for ztb_excel_data_c
+    {
+      EndUser       = end_user;
+      FileId        = file_id;
+      LineId        = line_id;
+      LineNumber    = line_no;
+      PoNumber      = po_number;
+      PoItem        = po_item;
+      GrQuantity    = gr_quantity;
+      UnitOfMeasure = unit_of_measure;
+      SiteId        = site_id;
+      HeaderText    = header_text;
+    }
+}

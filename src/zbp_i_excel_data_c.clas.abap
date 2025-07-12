@@ -1,0 +1,5 @@
+CLASS zbp_i_excel_data_c DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zi_excel_user_c.
+ENDCLASS.
+
+CLASS zbp_i_excel_data_c IMPLEMENTATION.
+ENDCLASS.

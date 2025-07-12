@@ -1,0 +1,31 @@
+@Metadata.layer: #CUSTOMER
+@UI.headerInfo: {
+    typeName: 'File Data',
+    typeNamePlural: 'File Data',
+    title: { type: #STANDARD, value: 'EndUser' },
+    description: { type: #STANDARD, value: 'FileId' }
+}
+annotate entity ZC_EXCEL_DATA_C with
+{
+
+  @UI.hidden: true
+  @UI.lineItem: [{ type: #FOR_ACTION, label: 'Process Data', dataAction: 'processData' }]
+  EndUser;
+  @UI.hidden: true
+  FileId;
+  @UI.lineItem: [{ position: 10, label: 'Line' }]
+  LineNumber;
+  @UI.lineItem: [{ position: 20, label: 'PO Number' }]
+  PoNumber;
+  @UI.lineItem: [{ position: 30, label: 'PO Item' }]
+  PoItem;
+  @UI.lineItem: [{ position: 40, label: 'Quantity' }]
+  GrQuantity;
+  @UI.lineItem: [{ position: 50, label: 'UoM' }]
+  UnitOfMeasure;
+  @UI.lineItem: [{ position: 60, label: 'Site ID' }]
+  SiteId;
+  @UI.lineItem: [{ position: 70, label: 'Header Text' }]
+  HeaderText;
+
+}
