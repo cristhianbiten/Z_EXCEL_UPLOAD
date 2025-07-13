@@ -69,7 +69,8 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
 
     READ ENTITIES OF zi_excel_user_c IN LOCAL MODE
     ENTITY ExcelUser
-    ALL FIELDS WITH CORRESPONDING #( keys )
+    ALL FIELDS
+    WITH CORRESPONDING #( keys )
     RESULT DATA(lt_file_entity).
 
     DATA(lv_attachment) = lt_file_entity[ 1 ]-attachment.
@@ -159,31 +160,31 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
             FileId    = keys[ 1 ]-FileId
             %target   = VALUE #(
                 FOR ls_excel_aux IN lt_excel (
-                    %cid         = keys[ 1 ]-%cid_ref
-                    %is_draft    = keys[ 1 ]-%is_draft
+                    %cid      = keys[ 1 ]-%cid_ref
+                    %is_draft = keys[ 1 ]-%is_draft
                     %data = VALUE #(
-                        EndUser         = keys[ 1 ]-EndUser
-                        FileId          = keys[ 1 ]-FileId
-                        LineId          = ls_excel_aux-line_id
-                        LineNumber      = ls_excel_aux-line_number
-                        PoNumber        = ls_excel_aux-po_number
-                        PoItem          = ls_excel_aux-po_item
-                        GrQuantity      = ls_excel_aux-gr_quantity
-                        UnitOfMeasure   = ls_excel_aux-unit_of_measure
-                        SiteId          = ls_excel_aux-site_id
-                        HeaderText      = ls_excel_aux-header_text
+                        EndUser       = keys[ 1 ]-EndUser
+                        FileId        = keys[ 1 ]-FileId
+                        LineId        = ls_excel_aux-line_id
+                        LineNumber    = ls_excel_aux-line_number
+                        PoNumber      = ls_excel_aux-po_number
+                        PoItem        = ls_excel_aux-po_item
+                        GrQuantity    = ls_excel_aux-gr_quantity
+                        UnitOfMeasure = ls_excel_aux-unit_of_measure
+                        SiteId        = ls_excel_aux-site_id
+                        HeaderText    = ls_excel_aux-header_text
                     )
                     %control = VALUE #(
-                        EndUser         = if_abap_behv=>mk-on
-                        FileId          = if_abap_behv=>mk-on
-                        LineId          = if_abap_behv=>mk-on
-                        LineNumber      = if_abap_behv=>mk-on
-                        PoNumber        = if_abap_behv=>mk-on
-                        PoItem          = if_abap_behv=>mk-on
-                        GrQuantity      = if_abap_behv=>mk-on
-                        UnitOfMeasure   = if_abap_behv=>mk-on
-                        SiteId          = if_abap_behv=>mk-on
-                        HeaderText      = if_abap_behv=>mk-on
+                        EndUser       = if_abap_behv=>mk-on
+                        FileId        = if_abap_behv=>mk-on
+                        LineId        = if_abap_behv=>mk-on
+                        LineNumber    = if_abap_behv=>mk-on
+                        PoNumber      = if_abap_behv=>mk-on
+                        PoItem        = if_abap_behv=>mk-on
+                        GrQuantity    = if_abap_behv=>mk-on
+                        UnitOfMeasure = if_abap_behv=>mk-on
+                        SiteId        = if_abap_behv=>mk-on
+                        HeaderText    = if_abap_behv=>mk-on
                     )
                 )
             )
@@ -193,15 +194,17 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
     "Delete Existing entry for user if any
     READ ENTITIES OF zi_excel_user_c IN LOCAL MODE
     ENTITY ExcelUser BY \_Data
-    ALL FIELDS WITH CORRESPONDING #( keys )
+    ALL FIELDS
+    WITH CORRESPONDING #( keys )
     RESULT DATA(lt_existing_data).
     IF lt_existing_data IS NOT INITIAL.
 
       MODIFY ENTITIES OF zi_excel_user_c IN LOCAL MODE
-      ENTITY ExcelData DELETE FROM VALUE #(
+      ENTITY ExcelData
+      DELETE FROM VALUE #(
         FOR ls_data IN lt_existing_data (
-          %key        = ls_data-%key
-          %is_draft   = ls_data-%is_draft
+          %key      = ls_data-%key
+          %is_draft = ls_data-%is_draft
         )
       )
       MAPPED DATA(lt_del_mapped)
@@ -212,7 +215,8 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
 
     "Add New Entry for ExcelData (association)
     MODIFY ENTITIES OF zi_excel_user_c IN LOCAL MODE
-    ENTITY ExcelUser CREATE BY \_Data
+    ENTITY ExcelUser
+    CREATE BY \_Data
     AUTO FILL CID WITH lt_data.
 
     "Modify Status
@@ -227,14 +231,16 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
 
     "Read Updated Entry
     READ ENTITIES OF zi_excel_user_c IN LOCAL MODE
-    ENTITY ExcelUser ALL FIELDS WITH CORRESPONDING #( Keys )
+    ENTITY ExcelUser
+    ALL FIELDS
+    WITH CORRESPONDING #( Keys )
     RESULT DATA(lt_updated_user).
 
     "Send Status back to front end
     result = VALUE #(
       FOR ls_upd_head IN lt_updated_user (
-        %tky    = ls_upd_head-%tky
-        %param  = ls_upd_head
+        %tky   = ls_upd_head-%tky
+        %param = ls_upd_head
       )
     ).
   ENDMETHOD.
@@ -242,7 +248,8 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
   METHOD FillFileStatus.
     "Read the data to be modified to get the transactional keys (%tky)
     READ ENTITIES OF zi_excel_user_c IN LOCAL MODE
-      ENTITY ExcelUser FIELDS ( FileStatus )
+      ENTITY ExcelUser
+      FIELDS ( FileStatus )
       WITH CORRESPONDING #( keys )
       RESULT DATA(lt_user).
 
@@ -264,10 +271,12 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
     " 1. Read parent (ExcelUser) and child (ExcelData) entities in a single call
     READ ENTITIES OF zi_excel_user_c IN LOCAL MODE
       ENTITY ExcelUser
-        ALL FIELDS WITH CORRESPONDING #( keys )
+        ALL FIELDS
+        WITH CORRESPONDING #( keys )
         RESULT DATA(lt_user)
       ENTITY ExcelUser BY \_Data
-        ALL FIELDS WITH CORRESPONDING #( keys )
+        ALL FIELDS
+        WITH CORRESPONDING #( keys )
         RESULT DATA(lt_data).
 
     " 2. Delete existing child data (if any)
