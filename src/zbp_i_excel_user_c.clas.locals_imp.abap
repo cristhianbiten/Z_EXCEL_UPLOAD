@@ -84,7 +84,7 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
 
     "Get number of columns in upload file for validation
     TRY.
-        lo_table_descr = CAST #( cl_abap_tabledescr=>describe_by_data( p_data = lt_excel ) ).
+        lo_table_descr  = CAST #( cl_abap_tabledescr=>describe_by_data( p_data = lt_excel ) ).
         lo_struct_descr = CAST #( lo_table_descr->get_table_line_type( ) ).
         DATA(lv_no_of_cols) = lines( lo_struct_descr->components ).
       CATCH cx_sy_move_cast_error.
@@ -160,7 +160,7 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
             %target   = VALUE #(
                 FOR ls_excel_aux IN lt_excel (
                     %cid         = keys[ 1 ]-%cid_ref
-                    %is_draft   = keys[ 1 ]-%is_draft
+                    %is_draft    = keys[ 1 ]-%is_draft
                     %data = VALUE #(
                         EndUser         = keys[ 1 ]-EndUser
                         FileId          = keys[ 1 ]-FileId
@@ -218,10 +218,9 @@ CLASS lhc_ExcelUser IMPLEMENTATION.
     "Modify Status
     MODIFY ENTITIES OF zi_excel_user_c IN LOCAL MODE
     ENTITY ExcelUser
-    UPDATE FROM VALUE #(  (
-        %tky        = lt_file_entity[ 1 ]-%tky
-        FileStatus  = 'File Uploaded'
-        %control-FileStatus = if_abap_behv=>mk-on ) )
+    UPDATE FROM VALUE #(  ( %tky                = lt_file_entity[ 1 ]-%tky
+                            FileStatus          = 'File Uploaded'
+                            %control-FileStatus = if_abap_behv=>mk-on ) )
     MAPPED DATA(lt_upd_mapped)
     FAILED DATA(lt_upd_failed)
     REPORTED DATA(lt_upd_reported).
