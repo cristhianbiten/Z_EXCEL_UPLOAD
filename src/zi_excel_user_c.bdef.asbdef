@@ -73,7 +73,6 @@ authorization dependent by _User
 
   association _User;
 
-  //action uploadXLData result [1] $self;
   action processData result [1] $self;
 
   mapping for ztb_excel_data_c
